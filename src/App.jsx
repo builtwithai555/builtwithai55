@@ -4,6 +4,8 @@ import WelcomeScreen from './components/WelcomeScreen';
 import QuizQuestion from './components/QuizQuestion';
 import EmailCapture from './components/EmailCapture';
 import ResultsScreen from './components/ResultsScreen';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
 import './App.css';
 
 const QUIZ_QUESTIONS = [
@@ -40,7 +42,8 @@ const QUIZ_QUESTIONS = [
 ];
 
 function App() {
-  const [step, setStep] = useState('welcome'); // welcome, quiz, email, results
+  const [step, setStep] = useState('welcome'); // welcome, quiz, email, results, privacy, terms
+  const [previousStep, setPreviousStep] = useState('welcome');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [, setEmail] = useState('');
@@ -66,6 +69,15 @@ function App() {
     setStep('results');
   };
 
+  const handleNavigatePolicy = (newStep) => {
+    setPreviousStep(step);
+    setStep(newStep);
+  };
+
+  const handleBackFromPolicy = () => {
+    setStep(previousStep);
+  };
+
   const renderCurrentStep = () => {
     switch (step) {
       case 'welcome':
@@ -84,6 +96,10 @@ function App() {
         return <EmailCapture onSubmit={handleEmailSubmit} />;
       case 'results':
         return <ResultsScreen answers={answers} />;
+      case 'privacy':
+        return <PrivacyPolicy onBack={handleBackFromPolicy} />;
+      case 'terms':
+        return <TermsOfService onBack={handleBackFromPolicy} />;
       default:
         return <WelcomeScreen onStart={handleStart} />;
     }
@@ -108,6 +124,11 @@ function App() {
         <p className="disclaimer-text">
           This site is not a part of the Facebook website or Facebook Inc. Additionally, This site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of FACEBOOK, Inc.
         </p>
+        <div className="legal-links">
+          <button onClick={() => handleNavigatePolicy('privacy')} className="link-btn">Privacy Policy</button>
+          <span> | </span>
+          <button onClick={() => handleNavigatePolicy('terms')} className="link-btn">Terms of Service</button>
+        </div>
       </footer>
     </div>
   );
