@@ -63,10 +63,30 @@ function App() {
     }
   };
 
-  const handleEmailSubmit = (submittedEmail) => {
+  const handleEmailSubmit = async (submittedEmail) => {
     setEmail(submittedEmail);
-    // In a real app, you would send the email and answers to your backend here
-    setStep('results');
+    
+    try {
+      const response = await fetch('http://localhost:3001/api/submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: submittedEmail,
+          answers: answers
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit');
+      }
+
+      setStep('results');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      throw error;
+    }
   };
 
   const handleNavigatePolicy = (newStep) => {

@@ -1,17 +1,27 @@
 import { useState } from 'react';
-import { Mail, ArrowRight } from 'lucide-react';
+import { Mail, ArrowRight, Loader } from 'lucide-react';
 
 export default function EmailCapture({ onSubmit }) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setError('Please enter a valid email address.');
       return;
     }
-    onSubmit(email);
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      await onSubmit(email);
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -33,10 +43,11 @@ export default function EmailCapture({ onSubmit }) {
             setEmail(e.target.value);
             setError('');
           }}
+          disabled={isLoading}
         />
         {error && <p className="error-text">{error}</p>}
-        <button type="submit" className="btn-primary">
-          See My Results <ArrowRight size={20} />
+        <button type="submit" className="btn-primary" disabled={isLoading}>
+          {isLoading ? <><Loader size={20} className="animate-spin" /> Saving...</> : <>See My Results <ArrowRight size={20} /></>}
         </button>
       </form>
       <p style={{ fontSize: '0.85rem', marginTop: '1rem', color: 'var(--text-muted)' }}>
