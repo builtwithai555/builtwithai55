@@ -55,6 +55,23 @@ app.post('/api/submissions', async (req, res) => {
   }
 });
 
+app.get('/api/submissions', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const expectedPassword = process.env.ADMIN_PASSWORD || 'getpeptides2026';
+    
+    if (!authHeader || authHeader !== `Bearer ${expectedPassword}`) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const result = await pool.query('SELECT * FROM submissions ORDER BY created_at DESC');
+    res.status(200).json({ success: true, data: result.rows });
+  } catch (err) {
+    console.error('Error fetching submissions:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Backend server running on http://localhost:${port}`);
 });

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Activity } from 'lucide-react';
 import WelcomeScreen from './components/WelcomeScreen';
 import QuizQuestion from './components/QuizQuestion';
@@ -6,6 +6,7 @@ import EmailCapture from './components/EmailCapture';
 import ResultsScreen from './components/ResultsScreen';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
+import AdminDashboard from './components/AdminDashboard';
 import './App.css';
 
 const QUIZ_QUESTIONS = [
@@ -47,6 +48,23 @@ function App() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [, setEmail] = useState('');
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#admin') {
+        setStep('admin');
+      } else if (step === 'admin') {
+        setStep('welcome');
+      }
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    if (window.location.hash === '#admin') {
+      setStep('admin');
+    }
+    
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [step]);
 
   const handleStart = () => {
     setStep('quiz');
@@ -120,6 +138,8 @@ function App() {
         return <PrivacyPolicy onBack={handleBackFromPolicy} />;
       case 'terms':
         return <TermsOfService onBack={handleBackFromPolicy} />;
+      case 'admin':
+        return <AdminDashboard onBack={() => { window.location.hash = ''; setStep('welcome'); }} />;
       default:
         return <WelcomeScreen onStart={handleStart} />;
     }
