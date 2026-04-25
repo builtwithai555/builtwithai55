@@ -100,6 +100,15 @@ function App() {
       <main className="main-content">
         {renderCurrentStep()}
       </main>
+      
+      <footer className="footer">
+        <p className="disclaimer-text">
+          <strong>Disclaimer:</strong> The information provided on this website is for educational purposes only and is not intended as medical advice. Always consult with a qualified healthcare professional before starting any new treatment or peptide therapy.
+        </p>
+        <p className="disclaimer-text">
+          This site is not a part of the Facebook website or Facebook Inc. Additionally, This site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of FACEBOOK, Inc.
+        </p>
+      </footer>
     </div>
   );
 }
